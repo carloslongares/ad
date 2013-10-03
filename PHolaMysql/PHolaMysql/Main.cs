@@ -20,29 +20,48 @@ namespace Serpis.ad
 
 			MySqlDataReader mySqlDataReader= mySqlCommand.ExecuteReader();
 			
-			Console.Write (string.Join(" ",getColumNames(mySqlDataReader)));
+			Console.WriteLine (string.Join(" ",dinamicGetColumNamess(mySqlDataReader)));
 			//int contador=mySqlDataReader.FieldCount;
 			//for(int i=0;i<contador;i++){
 			//	string name= mySqlDataReader.GetName(i);		
 			//	Console.Write(name+ " ");
 			//}
 			
-			
-			
-			//while(mySqlDataReader.Read()){
-			//	int num=0;
-			//	Console.WriteLine();
-			//	Console.Write(mySqlDataReader.GetValue(num));
-			//	num++;
-			//}
+		while(mySqlDataReader.Read())
+				Console.WriteLine(getLine(mySqlDataReader));
+//				string line= " ";
+//				for (int index=0; index< mySqlDataReader.FieldCount;index++){
+//					object value= line+mySqlDataReader.GetValue(index);
+//					if (value is DBNull)
+//						value= "null";
+//					line=line +value+" ";
+//				}
+//				Console.WriteLine(line);
+//			}
+//			
 			
 			mySqlDataReader.Close();
 			mySqlConnection.Close ();
 	
 		}
 		
-		private static string[] getColumnNames (MySqlDataReader mySqlDataReader){
+		private static string getLine(MySqlDataReader mySqlDataReader){
+			string line= " ";
+			
+				
+				for (int index=0; index< mySqlDataReader.FieldCount;index++){
+					object value= mySqlDataReader.GetValue(index);
+					if (value is DBNull)
+						value= "null";
+					line=line +value+" ";
+					
+				}
+			
+			return line;
+		}
 		
+		
+		private static string[] getColumnNames (MySqlDataReader mySqlDataReader){
 		string[] nombres = new string[mySqlDataReader.FieldCount];
 		for (int index=0;index<mySqlDataReader.FieldCount;index++)
 				nombres[index]=mySqlDataReader.GetName(index);
