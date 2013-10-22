@@ -50,18 +50,30 @@ using MySql.Data.MySqlClient;
 				treeview.Model=listStore;
 
 			}
-		
+		mySqlDataReader.Close();
 		editAction.Sensitive=false;
+		deleteAction.Sensitive=false;
+		addAction.Sensitive=false;
+		
+		mySqlCommand.CommandText= "select * from articulo";
 		
 		treeview.Selection.Changed += delegate 
 			
-		{
-			editAction.Sensitive= treeview.Selection.CountSelectedRows()>0;
+			{
+				editAction.Sensitive= treeview.Selection.CountSelectedRows()>0;
+				deleteAction.Sensitive= treeview.Selection.CountSelectedRows()>0;
+				addAction.Sensitive=treeview.Selection.CountSelectedRows()>0;
+			};
 			
 			editAction.Activated += delegate {
 			String mensaje;
 			
-			
+				
+			//CON ESTA CONDICION PROTEJO EL EVENTO EN CASO DE QUE SE ACTIVARA EL BOTON Y NO HUBIESE NADA SELECCIONADO	
+			if (treeview.Selection.CountSelectedRows()==0)
+				return;
+				
+				
 			TreeIter treeIter;
 			if(treeview.Selection.GetSelected(out treeIter)){
 				String[] linea = new String[fieldCount];	
@@ -71,20 +83,79 @@ using MySql.Data.MySqlClient;
 			 mensaje= string.Join("  ", linea);
 			}
 			
-			MessageDialog md = new MessageDialog (this,DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Close, mensaje);
+			MessageDialog md = new MessageDialog (this,DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Close, mensaje);
+					
 			md.Run ();
 			md.Destroy();
-			
-			
-			
-			
-			
-			
-			
-			
 				};
 			
+			deleteAction.Activated += delegate {
+				
+				if(treeview.Selection.CountSelectedRows()==0)
+					return;
+				TreeIter treeIter;
+				treeview.Selection.GetSelected(out treeIter);
+				object id = listStore.GetValue(treeIter,0).ToString();
+				Console.WriteLine(id);
+				
+				MySqlCommand mySqlCommandDelete= mySqlConnection.CreateCommand();
+				mySqlCommandDelete.CommandText= "delete from articulo where id='"+id+"'";
+				
+				MessageDialog md = new MessageDialog (this, 
+                                      	DialogFlags.DestroyWithParent,
+	                              		MessageType.Question, 
+                                      	ButtonsType.YesNo, "¿Estas seguro de eliminarlo?");
+				ResponseType result = (ResponseType)md.Run ();
+				
+				if (result == ResponseType.Yes){
+					mySqlCommandDelete.ExecuteNonQuery();
+					md.Destroy();
+				
+				}
+				else
+					md.Destroy();
+
+				};
+			
+			
+			addAction.Activated += delegate {
+				
+				if(treeview.Selection.CountSelectedRows()==0)
+					return;
+				
 			};
+		refreshAction.Activated += delegate {
+			
+			listStore.Clear();
+			MySqlDataReader mySqlDataReaderActualiza= mySqlCommand.ExecuteReader();
+
+			//CREACION DEL MODELO DE DATOS DE LA TABLA
+			fieldCount = mySqlDataReaderActualiza.FieldCount;
+	
+			listStore= createListStore(fieldCount);
+		
+			//INSERCION DE LOS DATOS DENTRO DEL MODELO
+			while(mySqlDataReaderActualiza.Read()){
+					
+				string []line= new string[mySqlDataReaderActualiza.FieldCount];
+				for (int index=0; index< mySqlDataReaderActualiza.FieldCount;index++){
+						object value= mySqlDataReaderActualiza.GetValue(index);
+						line[index]=value.ToString();			
+						}
+					
+				listStore.AppendValues(line);
+			
+				//INSERCION DEL MODELO EN LA TABLA(TREEVIEW)
+				treeview.Model=listStore;
+				
+
+			}
+			
+			mySqlDataReaderActualiza.Close();
+		};
+		
+		
+		
 			
 			// CREACION DE UN EVENTO PARA TREEVIEW (INDICA EN CONSOLA EN QUE CELDA NOS ENCONTRAMOS)
 //			treeview.Selection.Changed += delegate {

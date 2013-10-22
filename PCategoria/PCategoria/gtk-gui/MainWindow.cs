@@ -4,15 +4,11 @@
 public partial class MainWindow
 {
 	private global::Gtk.UIManager UIManager;
-	private global::Gtk.Action editAction;
 	private global::Gtk.Action deleteAction;
-	private global::Gtk.Action addAction;
-	private global::Gtk.Action refreshAction;
-	private global::Gtk.EventBox eventbox1;
 	private global::Gtk.VBox vbox;
 	private global::Gtk.Toolbar toolbar;
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
-	private global::Gtk.TreeView treeview;
+	private global::Gtk.TreeView treeView;
 	
 	protected virtual void Build ()
 	{
@@ -20,32 +16,20 @@ public partial class MainWindow
 		// Widget MainWindow
 		this.UIManager = new global::Gtk.UIManager ();
 		global::Gtk.ActionGroup w1 = new global::Gtk.ActionGroup ("Default");
-		this.editAction = new global::Gtk.Action ("editAction", global::Mono.Unix.Catalog.GetString ("_Editar"), null, "gtk-edit");
-		this.editAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Editar");
-		w1.Add (this.editAction, null);
 		this.deleteAction = new global::Gtk.Action ("deleteAction", global::Mono.Unix.Catalog.GetString ("Eliminar"), null, "gtk-delete");
 		this.deleteAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Eliminar");
 		w1.Add (this.deleteAction, null);
-		this.addAction = new global::Gtk.Action ("addAction", global::Mono.Unix.Catalog.GetString ("Añadir"), null, "gtk-add");
-		this.addAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Añadir");
-		w1.Add (this.addAction, null);
-		this.refreshAction = new global::Gtk.Action ("refreshAction", global::Mono.Unix.Catalog.GetString ("Actualizar"), null, "gtk-refresh");
-		this.refreshAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Actualizar");
-		w1.Add (this.refreshAction, null);
 		this.UIManager.InsertActionGroup (w1, 0);
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
 		this.Title = global::Mono.Unix.Catalog.GetString ("MainWindow");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child MainWindow.Gtk.Container+ContainerChild
-		this.eventbox1 = new global::Gtk.EventBox ();
-		this.eventbox1.Name = "eventbox1";
-		// Container child eventbox1.Gtk.Container+ContainerChild
 		this.vbox = new global::Gtk.VBox ();
 		this.vbox.Name = "vbox";
 		this.vbox.Spacing = 6;
 		// Container child vbox.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar'><toolitem name='editAction' action='editAction'/><toolitem name='addAction' action='addAction'/><toolitem name='deleteAction' action='deleteAction'/><toolitem name='refreshAction' action='refreshAction'/></toolbar></ui>");
+		this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar'><toolitem name='deleteAction' action='deleteAction'/></toolbar></ui>");
 		this.toolbar = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/toolbar")));
 		this.toolbar.Name = "toolbar";
 		this.toolbar.ShowArrow = false;
@@ -59,15 +43,14 @@ public partial class MainWindow
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 		this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 		// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-		this.treeview = new global::Gtk.TreeView ();
-		this.treeview.CanFocus = true;
-		this.treeview.Name = "treeview";
-		this.GtkScrolledWindow.Add (this.treeview);
+		this.treeView = new global::Gtk.TreeView ();
+		this.treeView.CanFocus = true;
+		this.treeView.Name = "treeView";
+		this.GtkScrolledWindow.Add (this.treeView);
 		this.vbox.Add (this.GtkScrolledWindow);
 		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox [this.GtkScrolledWindow]));
 		w4.Position = 1;
-		this.eventbox1.Add (this.vbox);
-		this.Add (this.eventbox1);
+		this.Add (this.vbox);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
